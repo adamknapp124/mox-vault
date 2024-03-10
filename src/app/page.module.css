@@ -1,0 +1,20 @@
+.main {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+}
+
+.select {
+	border: 2px solid black;
+}
+
+.flex {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 5px;
+}
+
+.cards {
+	border: 2px solid pink;
+	padding: 5px;
+}
