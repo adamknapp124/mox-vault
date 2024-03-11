@@ -27,6 +27,34 @@
 	justify-content: center;
 }
 
+.cardContainer {
+	position: relative;
+}
+
+.buttonContainer {
+	top: 0;
+	display: flex;
+	justify-content: space-around;
+	font-size: 2em;
+	margin: 5px;
+}
+
+.button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	background-color: lightgray;
+	text-align: center;
+	border-radius: 1000px;
+	width: 40px;
+}
+
+.button:hover {
+	scale: 1.1;
+	animation: ease-in-out;
+}
+
 .cards {
 	margin: 5px;
 }
