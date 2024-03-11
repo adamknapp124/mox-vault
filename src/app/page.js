@@ -4,6 +4,8 @@ import Image from 'next/image';
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
 
+import blank from '../../public/images/magic_blank.jpeg';
+
 export default function Home() {
 	const [setNames, setSetNames] = useState([]);
 	const [selectedSet, setSelectedSet] = useState('');
@@ -18,6 +20,7 @@ export default function Home() {
 		);
 		const setObject = await response.json();
 		const cards = setObject.data;
+		setCards([]);
 		setCards(cards);
 		console.log('cards: ', cards);
 	}
@@ -36,12 +39,15 @@ export default function Home() {
 	return (
 		<main className={styles.main}>
 			<div className={styles.select}>
-				<label htmlFor='sets'>Choose a set:</label>
+				<label htmlFor='sets' className={styles.label}>
+					Choose a set:
+				</label>
 				<select
 					name='sets'
 					id='sets'
 					value={selectedSet}
-					onChange={getCardsBySet}>
+					onChange={getCardsBySet}
+					className={styles.selectBox}>
 					{setNames.map((set) => (
 						<option key={set.code} value={set.code}>
 							{set.name}
@@ -56,12 +62,14 @@ export default function Home() {
 							<div>
 								<Image
 									key={card.id}
-									src={card.image_uris.normal}
+									src={card.image_uris ? card.image_uris.normal : blank}
 									alt={card.name}
-									width={100}
-									height={150}
+									width={200}
+									height={275}
 								/>
 							</div>
+							<div>{card.name}</div>
+							<div>${card.prices.usd}</div>
 						</div>
 					))}
 			</div>
