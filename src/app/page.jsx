@@ -1,5 +1,7 @@
 'use client';
 
+import Header from './components/Header';
+
 import Image from 'next/image';
 import styles from './page.module.css';
 import { useState, useEffect } from 'react';
@@ -10,15 +12,27 @@ export default function Home() {
 	const [setNames, setSetNames] = useState([]);
 	const [selectedSet, setSelectedSet] = useState('');
 	const [cards, setCards] = useState([]);
-	const [card, setCard] = useState([]);
+	const [collectionValue, setCollectionValue] = useState();
+
+	async function migrate() {
+		try {
+			const response = await fetch('http://localhost:3500/migrate-data', {
+				method: 'post',
+			});
+			console.log(response);
+		} catch (error) {
+			console.error('Error: ', error);
+		}
+	}
 
 	async function sendIt(card) {
 		try {
-			await fetch('/sendIt', {
+			await fetch('http://localhost:3500/sendIt', {
 				method: 'post',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					id: card.id,
+					card_id: card.id,
+					quantity: 1,
 					name: card.name,
 					image: card.image_uris.small,
 					cmc: card.cmc,
@@ -27,6 +41,7 @@ export default function Home() {
 					set_name: card.set_name,
 					rarity: card.rarity,
 					type: card.type_line,
+					price: card.prices.usd,
 				}),
 			})
 				.then((response) => response.json())
@@ -62,18 +77,37 @@ export default function Home() {
 	}
 
 	useEffect(() => {
-		async function getCardSets(order = 'asc') {
-			const response = await fetch('https://api.scryfall.com/sets');
-			const setData = await response.json();
-			const sets = setData.data;
-			setSetNames(sets);
+		async function getCardSets() {
+			try {
+				const response = await fetch('https://api.scryfall.com/sets');
+				const setData = await response.json();
+				const sets = setData.data;
+				setSetNames(sets);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+
+		async function getCollectionTotal() {
+			try {
+				const response = await fetch('http://localhost:3500/collection/total');
+				const collectionData = await response.json();
+				setCollectionValue(collectionData.totalValue);
+			} catch (err) {
+				console.log(err);
+			}
 		}
 
 		getCardSets();
-	}, []);
+		getCollectionTotal();
+	}, [setCollectionValue]);
 
 	return (
 		<main className={styles.main}>
+			<Header />
+			<div>Total:</div>
+			<div>{collectionValue}</div>
+			{/* <button onClick={migrate}>Migrate</button> */}
 			<div className={styles.select}>
 				<label htmlFor='sets' className={styles.label}>
 					Choose a set:
