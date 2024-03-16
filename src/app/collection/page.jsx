@@ -5,7 +5,6 @@ import Header from '../components/Header';
 
 export default async function Page() {
 	const collection = await getCardCollection();
-	console.log(collection);
 
 	return (
 		<main>
